@@ -1,0 +1,63 @@
+<Defs>
+
+    <TargetingModes.TargetingModeDef>
+        <defName>Standard</defName>
+        <label>standard</label>
+        <iconPath>UI/TargetingModes/Standard</iconPath>
+        <displayOrder>40</displayOrder>
+    </TargetingModes.TargetingModeDef>
+
+    <TargetingModes.TargetingModeDef>
+        <defName>Head</defName>
+        <label>head</label>
+        <iconPath>UI/TargetingModes/Head</iconPath>
+        <displayOrder>30</displayOrder>
+        <parts>
+            <li>Head</li>
+            <li>InsectHead</li>
+            <li>SnakeHead</li>
+            <li>MechanicalHead</li>
+            <li>Neck</li>
+            <li>Pronotum</li>
+            <li>MechanicalNeck</li>
+        </parts>
+    </TargetingModes.TargetingModeDef>
+
+    <TargetingModes.TargetingModeDef>
+        <defName>Body</defName>
+        <label>body</label>
+        <iconPath>UI/TargetingModes/Body</iconPath>
+        <displayOrder>20</displayOrder>
+        <parts>
+            <li>Torso</li>
+            <li>Body</li>
+            <li>MechanicalThorax</li>
+            <li>MechanicalCentipedeBodyFirstRing</li>
+        </parts>
+    </TargetingModes.TargetingModeDef>
+
+    <TargetingModes.TargetingModeDef>
+        <defName>Arms</defName>
+        <label>arms</label>
+        <iconPath>UI/TargetingModes/Arms</iconPath>
+        <displayOrder>10</displayOrder>
+        <tags>
+            <li>ManipulationLimbCore</li>
+            <li>ManipulationLimbSegment</li>
+            <li>ManipulationLimbDigit</li>
+        </tags>
+    </TargetingModes.TargetingModeDef>
+
+    <TargetingModes.TargetingModeDef>
+        <defName>Legs</defName>
+        <label>legs</label>
+        <iconPath>UI/TargetingModes/Legs</iconPath>
+        <displayOrder>0</displayOrder>
+        <tags>
+            <li>MovingLimbCore</li>
+            <li>MovingLimbSegment</li>
+            <li>MovingLimbDigit</li>
+        </tags>
+    </TargetingModes.TargetingModeDef>
+
+</Defs>
