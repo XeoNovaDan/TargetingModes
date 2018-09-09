@@ -11,27 +11,29 @@ namespace TargetingModes
     public class CompTargetingMode : ThingComp, ITargetModeSettable
     {
 
-        public Pawn Pawn => (Pawn)parent;
+        public Pawn Pawn => parent as Pawn;
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (Pawn.Faction != Faction.OfPlayer || !Pawn.Drafted)
+
+            if (parent.Faction != Faction.OfPlayer ||
+                (Pawn != null && ((!Pawn.RaceProps.Animal && !Pawn.Drafted) || (Pawn.RaceProps.Animal && Pawn.training.HasLearned(TrainableDefOf.Obedience)))))
                 yield break;
 
-            yield return TargetModeSettableUtility.SetTargetModeCommand(this);
+            yield return TargetingModesUtility.SetTargetModeCommand(this);
         }
 
-        public TargetingModeDef GetTargetingMode()
+        public override void PostExposeData()
         {
-            return targetingMode;
+            base.PostExposeData();
+            Scribe_Defs.Look(ref _targetingMode, "targetingMode");
         }
 
-        public void SetTargetingMode(TargetingModeDef targetMode)
-        {
-            targetingMode = targetMode;
-        }
+        public TargetingModeDef GetTargetingMode() => _targetingMode;
 
-        private TargetingModeDef targetingMode = TargetingModeDefOf.Head;
+        public void SetTargetingMode(TargetingModeDef targetMode) => _targetingMode = targetMode;
+
+        private TargetingModeDef _targetingMode = TargetingModeDefOf.Standard;
 
     }
 }

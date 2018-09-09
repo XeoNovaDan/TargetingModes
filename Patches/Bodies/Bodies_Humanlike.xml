@@ -1,0 +1,17 @@
+<Patch>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>*/BodyDef[defName="Human"]</xpath>
+        <value>
+            <li Class="TargetingModes.TargetModeRerollFactors">
+                <targetModeRerollCountFactors>
+                    <li>
+                        <key>Head</key>
+                        <value>1.75</value>
+                    </li>
+                </targetModeRerollCountFactors>
+            </li>
+        </value>
+    </Operation>
+
+</Patch>

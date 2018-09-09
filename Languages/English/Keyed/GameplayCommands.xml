@@ -1,7 +1,7 @@
 <LanguageData>
 
     <CommandSetTargetingModeMulti>Set targeting mode</CommandSetTargetingModeMulti>
-    <CommandSetTargetingMode>Mode: {0}</CommandSetTargetingMode>
-    <CommandSelectPlantToGrowDesc>Determine which targeting mode the pawn should use.</CommandSelectPlantToGrowDesc>
+    <CommandSetTargetingMode>Targeting: {0}</CommandSetTargetingMode>
+    <CommandSetTargetingModeDesc>Determine which targeting mode the pawn should use.</CommandSetTargetingModeDesc>
 
 </LanguageData>

@@ -23,9 +23,9 @@ namespace TargetingModes
             bool multiplePawnsSelected = false;
             foreach (object obj in Find.Selector.SelectedObjects)
             {
-                if (obj is ITargetModeSettable targetModeSettable)
+                if (obj is Thing thing && thing.TryGetComp<CompTargetingMode>() is ITargetModeSettable targetModeSettable)
                 {
-                    if (targetingMode != targetModeSettable.GetTargetingMode())
+                    if (targetingMode != null && targetingMode != targetModeSettable.GetTargetingMode())
                     {
                         multiplePawnsSelected = true;
                         break;
@@ -33,29 +33,35 @@ namespace TargetingModes
                     targetingMode = targetModeSettable.GetTargetingMode();
                 }
             }
-            if (multiplePawnsSelected)
-            {
-                icon = SetTargetingModeTex;
-                defaultLabel = "CommandSetTargetingModeMulti".Translate();
-            }
-            else
-            {
-                icon = targetingMode.uiIcon;
-                defaultLabel = "CommandSetTargetingMode".Translate(targetingMode.LabelCap);
-            }
+            icon = (multiplePawnsSelected) ? SetTargetingModeTex : targetingMode.uiIcon;
+            defaultLabel = (multiplePawnsSelected) ? "CommandSetTargetingModeMulti".Translate() : "CommandSetTargetingMode".Translate(targetingMode.LabelCap);
         }
 
         public override void ProcessInput(Event ev)
         {
             base.ProcessInput(ev);
-            TargetingModes.SortBy((TargetingModeDef t) => t.displayOrder, (TargetingModeDef t) => t.label);
+            if (settables == null)
+                settables = new List<ITargetModeSettable>();
+            if (!settables.Contains(settable))
+                settables.Add(settable);
+            TargetingModes.SortBy(t => -t.displayOrder, t => t.LabelCap);
             List<FloatMenuOption> targetingModeOptions = new List<FloatMenuOption>();
-            for (int i = 0; i < TargetingModes.Count; i++)
-            {
-                TargetingModeDef targetMode = TargetingModes[i];
-                targetingModeOptions.Add(new FloatMenuOption(targetMode.LabelCap, null));
-            }
+            foreach (TargetingModeDef targetMode in TargetingModes)
+                targetingModeOptions.Add(new FloatMenuOption(FloatMenuLabel(targetMode),
+                    () =>
+                    {
+                        for (int i = 0; i < settables.Count; i++)
+                            settables[i].SetTargetingMode(targetMode);
+                    }));
             Find.WindowStack.Add(new FloatMenu(targetingModeOptions));
+        }
+
+        private string FloatMenuLabel(TargetingModeDef targetingMode)
+        {
+            string label = targetingMode.LabelCap;
+            if (targetingMode.hitChanceFactor != 1f)
+                label += $" (x{targetingMode.hitChanceFactor.ToStringPercent()} Acc)";
+            return label;
         }
 
         public override bool InheritInteractionsFrom(Gizmo other)
@@ -66,16 +72,7 @@ namespace TargetingModes
             return false;
         }
 
-        public List<TargetingModeDef> TargetingModes
-        {
-            get
-            {
-                List<TargetingModeDef> targetingModes = new List<TargetingModeDef>();
-                foreach (TargetingModeDef targetMode in DefDatabase<TargetingModeDef>.AllDefsListForReading)
-                    targetingModes.Add(targetMode);
-                return targetingModes;
-            }
-        }
+        public List<TargetingModeDef> TargetingModes => DefDatabase<TargetingModeDef>.AllDefsListForReading;
 
     }
 

@@ -2,7 +2,7 @@
 
     <TargetingModes.TargetingModeDef>
         <defName>Standard</defName>
-        <label>standard</label>
+        <label>general</label>
         <iconPath>UI/TargetingModes/Standard</iconPath>
         <displayOrder>40</displayOrder>
     </TargetingModes.TargetingModeDef>
@@ -12,15 +12,14 @@
         <label>head</label>
         <iconPath>UI/TargetingModes/Head</iconPath>
         <displayOrder>30</displayOrder>
-        <parts>
-            <li>Head</li>
-            <li>InsectHead</li>
-            <li>SnakeHead</li>
-            <li>MechanicalHead</li>
+        <hitChanceFactor>0.7</hitChanceFactor>
+        <rerollCount>3</rerollCount>
+        <partsOrAnyChildren>
             <li>Neck</li>
+            <li>SnakeHead</li>
             <li>Pronotum</li>
             <li>MechanicalNeck</li>
-        </parts>
+        </partsOrAnyChildren>
     </TargetingModes.TargetingModeDef>
 
     <TargetingModes.TargetingModeDef>
@@ -28,9 +27,12 @@
         <label>body</label>
         <iconPath>UI/TargetingModes/Body</iconPath>
         <displayOrder>20</displayOrder>
+        <hitChanceFactor>0.9</hitChanceFactor>
+        <rerollCount>1</rerollCount>
         <parts>
             <li>Torso</li>
             <li>Body</li>
+            <li>SnakeBody</li>
             <li>MechanicalThorax</li>
             <li>MechanicalCentipedeBodyFirstRing</li>
         </parts>
@@ -41,6 +43,8 @@
         <label>arms</label>
         <iconPath>UI/TargetingModes/Arms</iconPath>
         <displayOrder>10</displayOrder>
+        <hitChanceFactor>0.8</hitChanceFactor>
+        <rerollCount>2</rerollCount>
         <tags>
             <li>ManipulationLimbCore</li>
             <li>ManipulationLimbSegment</li>
@@ -53,6 +57,8 @@
         <label>legs</label>
         <iconPath>UI/TargetingModes/Legs</iconPath>
         <displayOrder>0</displayOrder>
+        <hitChanceFactor>0.8</hitChanceFactor>
+        <rerollCount>2</rerollCount>
         <tags>
             <li>MovingLimbCore</li>
             <li>MovingLimbSegment</li>

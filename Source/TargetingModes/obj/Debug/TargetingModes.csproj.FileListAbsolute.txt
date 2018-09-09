@@ -2,3 +2,7 @@ E:\Documents\My RimWorld Mods\V1.0\TargetingModes\Assemblies\TargetingModes.dll
 E:\Documents\My RimWorld Mods\V1.0\TargetingModes\Source\TargetingModes\obj\Debug\TargetingModes.csprojAssemblyReference.cache
 E:\Documents\My RimWorld Mods\V1.0\TargetingModes\Source\TargetingModes\obj\Debug\TargetingModes.csproj.CoreCompileInputs.cache
 E:\Documents\My RimWorld Mods\V1.0\TargetingModes\Source\TargetingModes\obj\Debug\TargetingModes.dll
+E:\Documents\GitHub\TargetingModes\Assemblies\TargetingModes.dll
+E:\Documents\GitHub\TargetingModes\Source\TargetingModes\obj\Debug\TargetingModes.csprojAssemblyReference.cache
+E:\Documents\GitHub\TargetingModes\Source\TargetingModes\obj\Debug\TargetingModes.csproj.CoreCompileInputs.cache
+E:\Documents\GitHub\TargetingModes\Source\TargetingModes\obj\Debug\TargetingModes.dll
