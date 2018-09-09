@@ -25,6 +25,9 @@ namespace TargetingModes
             h.Patch(AccessTools.Method(typeof(PawnGroupMakerUtility), nameof(PawnGroupMakerUtility.GeneratePawns)),
                 postfix: new HarmonyMethod(patchType, nameof(Postfix_GeneratePawns)));
 
+            h.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.GetGizmos)),
+                postfix: new HarmonyMethod(patchType, nameof(Postfix_GetGizmos)));
+
             h.Patch(AccessTools.Method(typeof(ShotReport), nameof(ShotReport.HitFactorFromShooter), new[] { typeof(Thing), typeof(float) }),
                 postfix: new HarmonyMethod(patchType, nameof(Postfix_HitFactorFromShooter)));
 
@@ -51,6 +54,7 @@ namespace TargetingModes
 
         }
 
+        #region Postfix_GeneratePawns
         public static void Postfix_GeneratePawns(ref IEnumerable<Pawn> __result, PawnGroupMakerParms parms)
         {
             __result = ModifiedPawnGroup(__result, parms);
@@ -71,6 +75,27 @@ namespace TargetingModes
                     yield return pawn;
                 }
         }
+        #endregion
+
+        #region Postfix_GetGizmos
+        public static void Postfix_GetGizmos(Pawn __instance, ref IEnumerable<Gizmo> __result)
+        {
+            __result = ModifiedGizmoEnumerable(__instance, __result);
+        }
+
+        private static IEnumerable<Gizmo> ModifiedGizmoEnumerable(Pawn pawn, IEnumerable<Gizmo> result)
+        {
+            foreach (Gizmo gizmo in result)
+                yield return gizmo;
+
+            if (pawn.IsPlayerControlledAnimal() && pawn.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
+                foreach (Gizmo gizmo in targetingComp.CompGetGizmosExtra())
+                    yield return gizmo;
+        }
+
+        private static bool IsPlayerControlledAnimal(this Pawn pawn) =>
+            pawn.Spawned && pawn.MentalStateDef == null && pawn.RaceProps.Animal && pawn.Faction == Faction.OfPlayer;
+        #endregion
 
         public static void Postfix_HitFactorFromShooter(ref float __result, Thing caster)
         {
