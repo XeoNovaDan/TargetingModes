@@ -3,6 +3,7 @@
     <TargetingModes.TargetingModeDef>
         <defName>Standard</defName>
         <label>general</label>
+        <commonality>2</commonality>
         <iconPath>UI/TargetingModes/Standard</iconPath>
         <displayOrder>40</displayOrder>
     </TargetingModes.TargetingModeDef>
@@ -10,6 +11,7 @@
     <TargetingModes.TargetingModeDef>
         <defName>Head</defName>
         <label>head</label>
+        <commonality>0.5</commonality>
         <iconPath>UI/TargetingModes/Head</iconPath>
         <displayOrder>30</displayOrder>
         <hitChanceFactor>0.7</hitChanceFactor>
@@ -25,6 +27,7 @@
     <TargetingModes.TargetingModeDef>
         <defName>Body</defName>
         <label>body</label>
+        <commonality>2</commonality>
         <iconPath>UI/TargetingModes/Body</iconPath>
         <displayOrder>20</displayOrder>
         <hitChanceFactor>0.9</hitChanceFactor>

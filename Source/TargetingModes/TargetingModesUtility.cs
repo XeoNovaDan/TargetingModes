@@ -11,20 +11,32 @@ namespace TargetingModes
     public static class TargetingModesUtility
     {
 
-        public static Command_SetTargetingMode SetTargetModeCommand(ITargetModeSettable settable)
-        {
-            return new Command_SetTargetingMode
+        public static TargetingModeDef DefaultTargetingMode = TargetingModeDefOf.Standard;
+        public const int MinimumSkillForRandomTargetingMode = 8;
+        public const float MechanoidRandomTargetingModeChance = 0.35f;
+
+        public static Command_SetTargetingMode SetTargetModeCommand(ITargetModeSettable settable) =>
+            new Command_SetTargetingMode
             {
                 defaultDesc = "CommandSetTargetingModeDesc".Translate(),
                 settable = settable
             };
+
+        public static bool CanUseTargetingModes(this ThingDef weapon)
+        {
+            if (weapon == null || weapon.thingClass.IsAssignableFrom(typeof(Pawn)))
+                return true;
+            if (weapon.IsMeleeWeapon)
+                return true;
+            if (weapon.Verbs[0].CausesExplosion)
+                return false;
+            return true;
         }
         
-        // Only exists to make transpiling much less of a pain
         public static BodyPartRecord ResolvePrioritizedPart(BodyPartRecord part, DamageInfo dinfo, Pawn pawn)
         {
             BodyPartRecord newPart = part;
-            if (dinfo.Instigator?.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
+            if (dinfo.Weapon.CanUseTargetingModes() && dinfo.Instigator?.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
             {
                 TargetingModeDef targetingMode = targetingComp.GetTargetingMode();
                 if (!part.IsPrioritizedPart(targetingMode))
@@ -36,7 +48,7 @@ namespace TargetingModes
         public static BodyPartRecord ResolvePrioritizedPart_External(BodyPartRecord part, DamageInfo dinfo, Pawn pawn)
         {
             BodyPartRecord newPart = part;
-            if (dinfo.Instigator?.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
+            if (dinfo.Weapon.CanUseTargetingModes() && dinfo.Instigator?.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
             {
                 TargetingModeDef targetingMode = targetingComp.GetTargetingMode();
                 if (!part.IsPrioritizedPart(targetingMode))
@@ -64,6 +76,13 @@ namespace TargetingModes
                     return newPart;
             }
             return bodyPart;
+        }
+
+        public static bool IsCompetentWithWeapon(this Pawn pawn)
+        {
+            if (pawn.equipment.Primary.def.IsRangedWeapon && pawn.skills.GetSkill(SkillDefOf.Shooting).Level >= MinimumSkillForRandomTargetingMode)
+                return true;
+            return pawn.skills.GetSkill(SkillDefOf.Melee).Level >= MinimumSkillForRandomTargetingMode;
         }
 
     }

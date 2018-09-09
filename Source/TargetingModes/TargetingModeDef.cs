@@ -65,6 +65,8 @@ namespace TargetingModes
             });
         }
 
+        public float commonality = 1f;
+
         public string iconPath;
 
         public int displayOrder;

@@ -22,6 +22,9 @@ namespace TargetingModes
         {
             HarmonyInstance h = HarmonyInstance.Create("XeoNovaDan.TargetingModes");
 
+            h.Patch(AccessTools.Method(typeof(PawnGroupMakerUtility), nameof(PawnGroupMakerUtility.GeneratePawns)),
+                postfix: new HarmonyMethod(patchType, nameof(Postfix_GeneratePawns)));
+
             h.Patch(AccessTools.Method(typeof(ShotReport), nameof(ShotReport.HitFactorFromShooter), new[] { typeof(Thing), typeof(float) }),
                 postfix: new HarmonyMethod(patchType, nameof(Postfix_HitFactorFromShooter)));
 
@@ -46,6 +49,27 @@ namespace TargetingModes
             h.Patch(AccessTools.Method(typeof(DamageWorker_Bite), "ChooseHitPart"),
                 postfix: new HarmonyMethod(patchType, nameof(Postfix_ChooseHitPart_External)));
 
+        }
+
+        public static void Postfix_GeneratePawns(ref IEnumerable<Pawn> __result, PawnGroupMakerParms parms)
+        {
+            __result = ModifiedPawnGroup(__result, parms);
+        }
+
+        private static IEnumerable<Pawn> ModifiedPawnGroup(IEnumerable<Pawn> result, PawnGroupMakerParms parms)
+        {
+            if (result != null && result.Count() > 0)
+                foreach (Pawn pawn in result)
+                {
+                    if (pawn.def.HasComp(typeof(CompTargetingMode)) &&
+                        (pawn.RaceProps.Humanlike && parms.raidStrategy == TM_RaidStrategyDefOf.ImmediateAttackSmart && pawn.IsCompetentWithWeapon()) ||
+                        (pawn.RaceProps.IsMechanoid && Rand.Chance(TargetingModesUtility.MechanoidRandomTargetingModeChance)))
+                    {
+                        TargetingModeDef newTargetingMode = DefDatabase<TargetingModeDef>.AllDefsListForReading.RandomElementByWeight(t => t.commonality);
+                        pawn.TryGetComp<CompTargetingMode>().SetTargetingMode(newTargetingMode);
+                    }
+                    yield return pawn;
+                }
         }
 
         public static void Postfix_HitFactorFromShooter(ref float __result, Thing caster)

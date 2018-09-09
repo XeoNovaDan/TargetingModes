@@ -59,6 +59,7 @@
     <Compile Include="TargetingModeDefOf.cs" />
     <Compile Include="TargetingModesUtility.cs" />
     <Compile Include="TargetModeRerollFactors.cs" />
+    <Compile Include="TM_RaidStrategyDefOf.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

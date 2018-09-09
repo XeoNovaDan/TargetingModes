@@ -23,7 +23,7 @@ namespace TargetingModes
             bool multiplePawnsSelected = false;
             foreach (object obj in Find.Selector.SelectedObjects)
             {
-                if (obj is Thing thing && thing.TryGetComp<CompTargetingMode>() is ITargetModeSettable targetModeSettable)
+                if (obj is ThingWithComps thing && thing.TryGetComp<CompTargetingMode>() is ITargetModeSettable targetModeSettable)
                 {
                     if (targetingMode != null && targetingMode != targetModeSettable.GetTargetingMode())
                     {

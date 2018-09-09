@@ -15,12 +15,19 @@ namespace TargetingModes
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
+            if (parent.Faction == Faction.OfPlayer && (Pawn == null ||
+                (Pawn != null &&
+                (Pawn.training?.HasLearned(TrainableDefOf.Obedience) == true ||
+                Pawn.Drafted))))
+                yield return TargetingModesUtility.SetTargetModeCommand(this);
+        }
 
-            if (parent.Faction != Faction.OfPlayer ||
-                (Pawn != null && ((!Pawn.RaceProps.Animal && !Pawn.Drafted) || (Pawn.RaceProps.Animal && Pawn.training.HasLearned(TrainableDefOf.Obedience)))))
-                yield break;
-
-            yield return TargetingModesUtility.SetTargetModeCommand(this);
+        public override void CompTick()
+        {
+            base.CompTick();
+            // For compatibility with existing saves
+            if (_targetingMode == null)
+                _targetingMode = TargetingModesUtility.DefaultTargetingMode;
         }
 
         public override void PostExposeData()
@@ -33,7 +40,7 @@ namespace TargetingModes
 
         public void SetTargetingMode(TargetingModeDef targetMode) => _targetingMode = targetMode;
 
-        private TargetingModeDef _targetingMode = TargetingModeDefOf.Standard;
+        private TargetingModeDef _targetingMode = TargetingModesUtility.DefaultTargetingMode;
 
     }
 }
