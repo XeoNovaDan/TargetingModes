@@ -24,13 +24,16 @@ namespace TargetingModes
 
         public static bool CanUseTargetingModes(this ThingDef weapon)
         {
+            if (ModLister.HasActiveModWithName("JecsTools") &&
+                weapon.GetType().IsAssignableFrom(typeof(AbilityUser.ProjectileDef_Ability)))
+                return true;
             if (weapon == null || weapon.thingClass.IsAssignableFrom(typeof(Pawn)))
                 return true;
             if (weapon.thingClass.IsAssignableFrom(typeof(Building_TurretGun)))
                 return !weapon.building.turretGunDef.Verbs[0].CausesExplosion;
             if (weapon.IsMeleeWeapon)
                 return true;
-            if (weapon.Verbs[0].CausesExplosion)
+            if (weapon.Verbs?[0]?.CausesExplosion == true)
                 return false;
             return true;
         }
