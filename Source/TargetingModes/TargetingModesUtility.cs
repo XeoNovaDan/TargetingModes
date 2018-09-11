@@ -22,18 +22,18 @@ namespace TargetingModes
                 settable = settable
             };
 
-        public static bool CanUseTargetingModes(this ThingDef weapon)
+        public static bool CanUseTargetingModes(this ThingDef weapon, Thing instigator)
         {
+            if (instigator == null || weapon == null)
+                return false;
             if (ModLister.HasActiveModWithName("JecsTools") &&
                 weapon.GetType().IsAssignableFrom(typeof(AbilityUser.ProjectileDef_Ability)))
                 return true;
-            if (weapon == null || weapon.thingClass.IsAssignableFrom(typeof(Pawn)))
+            if (weapon.thingClass.IsAssignableFrom(typeof(Pawn)) || weapon.IsMeleeWeapon)
                 return true;
             if (weapon.thingClass.IsAssignableFrom(typeof(Building_TurretGun)))
                 return !weapon.building.turretGunDef.Verbs[0].CausesExplosion;
-            if (weapon.IsMeleeWeapon)
-                return true;
-            if (weapon.Verbs?[0]?.CausesExplosion == true)
+            if (weapon.Verbs[0].CausesExplosion)
                 return false;
             return true;
         }
@@ -41,7 +41,7 @@ namespace TargetingModes
         public static BodyPartRecord ResolvePrioritizedPart(BodyPartRecord part, DamageInfo dinfo, Pawn pawn)
         {
             BodyPartRecord newPart = part;
-            if (dinfo.Weapon.CanUseTargetingModes() && dinfo.Instigator?.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
+            if (dinfo.Weapon.CanUseTargetingModes(dinfo.Instigator) && dinfo.Instigator?.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
             {
                 TargetingModeDef targetingMode = targetingComp.GetTargetingMode();
                 if (!part.IsPrioritizedPart(targetingMode))
@@ -53,7 +53,7 @@ namespace TargetingModes
         public static BodyPartRecord ResolvePrioritizedPart_External(BodyPartRecord part, DamageInfo dinfo, Pawn pawn)
         {
             BodyPartRecord newPart = part;
-            if (dinfo.Weapon.CanUseTargetingModes() && dinfo.Instigator?.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
+            if (dinfo.Weapon.CanUseTargetingModes(dinfo.Instigator) && dinfo.Instigator?.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
             {
                 TargetingModeDef targetingMode = targetingComp.GetTargetingMode();
                 if (!part.IsPrioritizedPart(targetingMode))
