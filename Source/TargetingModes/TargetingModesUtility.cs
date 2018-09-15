@@ -32,6 +32,7 @@ namespace TargetingModes
             //Log.Message($"instigator def thingClass - {instigator?.def?.thingClass.ToStringSafe()} ");
             //Log.Message($"instigator def type - {instigator?.def?.GetType().ToStringSafe()} ");
             //Log.Message($"comp - {instigator?.def?.HasComp(typeof(CompTargetingMode)).ToStringSafe()} ");
+
             if (instigator == null || !instigator.def.HasComp(typeof(CompTargetingMode)) || weapon == null)
                 return false;
             if (weapon.GetType().IsAssignableFrom(typeof(AbilityUser.ProjectileDef_Ability)))
@@ -92,7 +93,11 @@ namespace TargetingModes
 
         public static bool IsCompetentWithWeapon(this Pawn pawn)
         {
-            if (pawn.equipment.Primary.def.IsRangedWeapon && pawn.skills.GetSkill(SkillDefOf.Shooting).Level >= MinimumSkillForRandomTargetingMode)
+            // Just to catch any weird edge cases; this check's conditions should never be satisfied
+            if (pawn.skills == null || pawn.equipment == null)
+                return false;
+
+            if (pawn.equipment.Primary?.def.IsRangedWeapon == true && pawn.skills.GetSkill(SkillDefOf.Shooting).Level >= MinimumSkillForRandomTargetingMode)
                 return true;
             return pawn.skills.GetSkill(SkillDefOf.Melee).Level >= MinimumSkillForRandomTargetingMode;
         }
