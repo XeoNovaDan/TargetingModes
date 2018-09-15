@@ -24,10 +24,17 @@ namespace TargetingModes
 
         public static bool CanUseTargetingModes(this ThingDef weapon, Thing instigator)
         {
-            if (instigator == null || weapon == null)
+            //Log.Message($"weapon - {weapon.ToStringSafe()} ");
+            //Log.Message($"weapon thingClass - {weapon?.thingClass.ToStringSafe()} ");
+            //Log.Message($"weapon type - {weapon?.GetType().ToStringSafe()} ");
+            //Log.Message($"instigator - {instigator.ToStringSafe()} ");
+            //Log.Message($"instigator type - {instigator?.GetType().ToStringSafe()} ");
+            //Log.Message($"instigator def thingClass - {instigator?.def?.thingClass.ToStringSafe()} ");
+            //Log.Message($"instigator def type - {instigator?.def?.GetType().ToStringSafe()} ");
+            //Log.Message($"comp - {instigator?.def?.HasComp(typeof(CompTargetingMode)).ToStringSafe()} ");
+            if (instigator == null || !instigator.def.HasComp(typeof(CompTargetingMode)) || weapon == null)
                 return false;
-            if (ModLister.HasActiveModWithName("JecsTools") &&
-                weapon.GetType().IsAssignableFrom(typeof(AbilityUser.ProjectileDef_Ability)))
+            if (weapon.GetType().IsAssignableFrom(typeof(AbilityUser.ProjectileDef_Ability)))
                 return true;
             if (weapon.thingClass.IsAssignableFrom(typeof(Pawn)) || weapon.IsMeleeWeapon)
                 return true;
