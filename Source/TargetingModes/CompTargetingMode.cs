@@ -16,15 +16,17 @@ namespace TargetingModes
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             if (parent.Faction == Faction.OfPlayer && (Pawn == null ||
-                (Pawn != null &&
                 (Pawn.training?.HasLearned(TrainableDefOf.Obedience) == true ||
-                Pawn.Drafted))))
+                Pawn.Drafted)))
                 yield return TargetingModesUtility.SetTargetModeCommand(this);
         }
 
         public override void CompTick()
         {
             base.CompTick();
+            // Debugging
+            //if (Find.TickManager.TicksGame % (GenTicks.TicksPerRealSecond * 4) == 0)
+            //    Log.Message(this.ToString());
             // For compatibility with existing saves
             if (_targetingMode == null)
                 _targetingMode = TargetingModesUtility.DefaultTargetingMode;
@@ -35,6 +37,9 @@ namespace TargetingModes
             base.PostExposeData();
             Scribe_Defs.Look(ref _targetingMode, "targetingMode");
         }
+
+        public override string ToString() =>
+            $"CompTargetingMode for {parent} :: _targetingMode = {_targetingMode.LabelCap}";
 
         public TargetingModeDef GetTargetingMode() => _targetingMode;
 

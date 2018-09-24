@@ -52,6 +52,9 @@ namespace TargetingModes
             h.Patch(AccessTools.Method(typeof(DamageWorker_Bite), "ChooseHitPart"),
                 postfix: new HarmonyMethod(patchType, nameof(Postfix_ChooseHitPart_External)));
 
+            h.Patch(AccessTools.Method(typeof(CompSpawnerMechanoidsOnDamaged), "TrySpawnMechanoids"),
+                transpiler: new HarmonyMethod(patchType, nameof(Transpile_TrySpawnMechanoids)));
+
         }
 
         #region Postfix_GeneratePawns
@@ -65,12 +68,11 @@ namespace TargetingModes
             if (result != null && result.Count() > 0)
                 foreach (Pawn pawn in result)
                 {
-                    if (pawn.def.HasComp(typeof(CompTargetingMode)) &&
-                        (pawn.RaceProps.Humanlike && parms.raidStrategy == TM_RaidStrategyDefOf.ImmediateAttackSmart && pawn.IsCompetentWithWeapon()) ||
+                    if ((pawn.RaceProps.Humanlike && parms.raidStrategy == TM_RaidStrategyDefOf.ImmediateAttackSmart && pawn.IsCompetentWithWeapon()) ||
                         (pawn.RaceProps.IsMechanoid && Rand.Chance(TargetingModesUtility.MechanoidRandomTargetingModeChance)))
                     {
-                        TargetingModeDef newTargetingMode = DefDatabase<TargetingModeDef>.AllDefsListForReading.RandomElementByWeight(t => t.commonality);
-                        pawn.TryGetComp<CompTargetingMode>().SetTargetingMode(newTargetingMode);
+                        // Validation for CompTargetingMode is done within this method
+                        pawn.TryAssignRandomTargetingMode();
                     }
                     yield return pawn;
                 }
@@ -97,6 +99,7 @@ namespace TargetingModes
             pawn.Spawned && pawn.MentalStateDef == null && pawn.RaceProps.Animal && pawn.Faction == Faction.OfPlayer;
         #endregion
 
+        #region AccuracyModifyingPatches
         public static void Postfix_HitFactorFromShooter(ref float __result, Thing caster)
         {
             if (caster.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
@@ -108,7 +111,9 @@ namespace TargetingModes
             if (__instance.caster is Thing caster && caster.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp && __result == caster.GetStatValue(StatDefOf.MeleeHitChance))
                 __result *= __result * targetingComp.GetTargetingMode().hitChanceFactor;
         }
+        #endregion
 
+        #region DamageWorkerModifyingPatches
         public static void Postfix_ChooseHitPart(ref BodyPartRecord __result, DamageInfo dinfo, Pawn pawn)
         {
             __result = TargetingModesUtility.ResolvePrioritizedPart(__result, dinfo, pawn);
@@ -146,6 +151,55 @@ namespace TargetingModes
                 yield return instruction;
             }
         }
+        #endregion
+
+        #region Transpile_TrySpawnMechanoids
+        public static IEnumerable<CodeInstruction> Transpile_TrySpawnMechanoids(IEnumerable<CodeInstruction> instructions)
+        {
+            List<CodeInstruction> instructionList = instructions.ToList();
+
+            MethodInfo tryAssignRandomTargetingModeMechanoid = AccessTools.Method(patchType, nameof(TryAssignRandomTargetingModeMechanoid));
+
+            for (int i = 0; i < instructionList.Count; i++)
+            {
+                CodeInstruction instruction = instructionList[i];
+
+                // Something oddly satisfying about this if-statement
+                // Basically "if line == this.pointsLeft -= pawn.kindDef.combatPower;"
+                if (instruction.IsTheInstructionIAmLookingFor(instructionList, i))
+                {
+                    yield return instruction;
+                    yield return new CodeInstruction(OpCodes.Ldloc_S, 7);
+                    instruction = new CodeInstruction(OpCodes.Call, tryAssignRandomTargetingModeMechanoid);
+                }
+
+                yield return instruction;
+            }
+        }
+
+        // I'm going mad
+        private static bool IsTheInstructionIAmLookingFor(this CodeInstruction instruction, List<CodeInstruction> instructionList, int i)
+        {
+            // If the transpiler iterator's at the beginning of the method, which isn't where the relevant code is anyway
+            if (i - 2 < 0)
+                return false;
+
+            CodeInstruction prevInst = instructionList[(i - 1)];
+            CodeInstruction prevInst2 = instructionList[(i - 2)];
+
+            return
+                instruction.opcode == OpCodes.Stfld && instruction.operand == AccessTools.Field(typeof(CompSpawnerMechanoidsOnDamaged), nameof(CompSpawnerMechanoidsOnDamaged.pointsLeft)) &&
+                prevInst.opcode == OpCodes.Sub &&
+                prevInst2.opcode == OpCodes.Ldfld && prevInst2.operand == AccessTools.Field(typeof(PawnKindDef), nameof(PawnKindDef.combatPower));
+        }
+
+
+        private static void TryAssignRandomTargetingModeMechanoid(this Pawn pawn)
+        {
+            if (Rand.Chance(TargetingModesUtility.MechanoidRandomTargetingModeChance))
+                pawn.TryAssignRandomTargetingMode();
+        }
+        #endregion
 
     }
 

@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
+using AbilityUser;
 
 namespace TargetingModes
 {
@@ -35,7 +36,7 @@ namespace TargetingModes
 
             if (instigator == null || !instigator.def.HasComp(typeof(CompTargetingMode)) || weapon == null)
                 return false;
-            if (weapon.GetType().IsAssignableFrom(typeof(AbilityUser.ProjectileDef_Ability)))
+            if (weapon.GetType().IsAssignableFrom(typeof(ProjectileDef_Ability)))
                 return true;
             if (weapon.thingClass.IsAssignableFrom(typeof(Pawn)) || weapon.IsMeleeWeapon)
                 return true;
@@ -100,6 +101,15 @@ namespace TargetingModes
             if (pawn.equipment.Primary?.def.IsRangedWeapon == true && pawn.skills.GetSkill(SkillDefOf.Shooting).Level >= MinimumSkillForRandomTargetingMode)
                 return true;
             return pawn.skills.GetSkill(SkillDefOf.Melee).Level >= MinimumSkillForRandomTargetingMode;
+        }
+
+        public static void TryAssignRandomTargetingMode(this Pawn pawn)
+        {
+            if (pawn.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
+            {
+                TargetingModeDef newTargetingMode = DefDatabase<TargetingModeDef>.AllDefsListForReading.RandomElementByWeight(t => t.commonality);
+                targetingComp.SetTargetingMode(newTargetingMode);
+            }
         }
 
     }
