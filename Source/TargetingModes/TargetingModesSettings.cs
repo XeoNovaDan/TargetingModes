@@ -72,6 +72,7 @@ namespace TargetingModes
         public override void ExposeData()
         {
             Scribe_Values.Look(ref accuracyPenalties, "accuracyPenalties", true);
+            Scribe_Values.Look(ref targModeResetFrequencyInt, "targModeResetFrequencyInt", 3f);
             Scribe_Values.Look(ref raidersUseTargModes, "raidersUseTargModes", true);
             Scribe_Values.Look(ref raiderMinSkillForTargMode, "raiderMinSkillForTargMode", 8f);
             Scribe_Values.Look(ref mechanoidTargModeChance, "mechanoidTargModeChance", 0.35f);
