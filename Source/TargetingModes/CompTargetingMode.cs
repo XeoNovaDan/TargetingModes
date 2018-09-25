@@ -26,8 +26,8 @@ namespace TargetingModes
         {
             base.CompTick();
             // Debugging
-            if (Find.TickManager.TicksGame % (GenTicks.TicksPerRealSecond * 4) == 0)
-                Log.Message(this.ToString());
+            //if (Find.TickManager.TicksGame % (GenTicks.TicksPerRealSecond * 4) == 0)
+            //    Log.Message(this.ToString());
             // For compatibility with existing saves
             if (_targetingMode == null || CanResetTargetingMode())
                 _targetingMode = TargetingModesUtility.DefaultTargetingMode;
