@@ -14,6 +14,9 @@ namespace TargetingModes
         public bool HasNoSpecifiedPartDetails =>
             parts.NullOrEmpty() && partsOrAnyChildren.NullOrEmpty() && tags.NullOrEmpty();
 
+        public float HitChanceFactor =>
+            (TargetingModesSettings.accuracyPenalties) ? hitChanceFactor : 1f;
+
         public bool PartsListContains(BodyPartDef def) => !parts.NullOrEmpty() && parts.Contains(def);
 
         public bool PartsOrAnyChildrenListContains(BodyPartRecord part)

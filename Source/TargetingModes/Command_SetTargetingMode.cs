@@ -59,8 +59,8 @@ namespace TargetingModes
         private string FloatMenuLabel(TargetingModeDef targetingMode)
         {
             string label = targetingMode.LabelCap;
-            if (targetingMode.hitChanceFactor != 1f)
-                label += $" (x{targetingMode.hitChanceFactor.ToStringPercent()} Acc)";
+            if (targetingMode.HitChanceFactor != 1f)
+                label += $" (x{targetingMode.HitChanceFactor.ToStringPercent()} Acc)";
             return label;
         }
 

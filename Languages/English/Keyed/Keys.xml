@@ -1,0 +1,27 @@
+<LanguageData>
+
+    <!-- Settings -->
+    <TargetingModesSettingsCategory>Targeting Modes</TargetingModesSettingsCategory>
+    <Settings_AccuracyPenalties>Accuracy penalties</Settings_AccuracyPenalties>
+    <Settings_AccuracyPenalties_Tooltip>Whether or not targeting modes have an effect on the accuracy of a pawn's attacks.</Settings_AccuracyPenalties_Tooltip>
+
+    <Settings_TargModeResetFrequency>Targeting mode resetting frequency</Settings_TargModeResetFrequency>
+    <Settings_TargModeResetFrequency_0>Never</Settings_TargModeResetFrequency_0>
+    <Settings_TargModeResetFrequency_1>1d</Settings_TargModeResetFrequency_1>
+    <Settings_TargModeResetFrequency_2>12h</Settings_TargModeResetFrequency_2>
+    <Settings_TargModeResetFrequency_3>6h</Settings_TargModeResetFrequency_3>
+    <Settings_TargModeResetFrequency_4>3h</Settings_TargModeResetFrequency_4>
+    <Settings_TargModeResetFrequency_5>1h</Settings_TargModeResetFrequency_5>
+
+    <Settings_RaidersUseTargetingModes>Hostile NPCs use Targeting Modes</Settings_RaidersUseTargetingModes>
+    <Settings_RaidersUseTargetingModes_Tooltip>Whether or not any hostile NPCs are able to use targeting modes other than general.</Settings_RaidersUseTargetingModes_Tooltip>
+    <Settings_MinRaiderWeaponSkill>Minimum weapon skill for raiders</Settings_MinRaiderWeaponSkill>
+    <Settings_MechTargModeChance>Chance for mechanoids</Settings_MechTargModeChance>
+    <Settings_BaseManhunterTargModeChance>Base chance for manhunters</Settings_BaseManhunterTargModeChance>
+
+    <!-- GameplayCommands -->
+    <CommandSetTargetingModeMulti>Set targeting mode</CommandSetTargetingModeMulti>
+    <CommandSetTargetingMode>Targeting: {0}</CommandSetTargetingMode>
+    <CommandSetTargetingModeDesc>Determine which targeting mode the pawn should use.</CommandSetTargetingModeDesc>
+
+</LanguageData>

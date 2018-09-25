@@ -22,8 +22,12 @@ namespace TargetingModes
         {
             HarmonyInstance h = HarmonyInstance.Create("XeoNovaDan.TargetingModes");
 
+            #region Patches
             h.Patch(AccessTools.Method(typeof(PawnGroupMakerUtility), nameof(PawnGroupMakerUtility.GeneratePawns)),
                 postfix: new HarmonyMethod(patchType, nameof(Postfix_GeneratePawns)));
+
+            h.Patch(AccessTools.Method(typeof(ManhunterPackIncidentUtility), nameof(ManhunterPackIncidentUtility.GenerateAnimals)),
+                postfix: new HarmonyMethod(patchType, nameof(Postfix_GenerateAnimals)));
 
             h.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.GetGizmos)),
                 postfix: new HarmonyMethod(patchType, nameof(Postfix_GetGizmos)));
@@ -54,6 +58,7 @@ namespace TargetingModes
 
             h.Patch(AccessTools.Method(typeof(CompSpawnerMechanoidsOnDamaged), "TrySpawnMechanoids"),
                 transpiler: new HarmonyMethod(patchType, nameof(Transpile_TrySpawnMechanoids)));
+            #endregion
 
         }
 
@@ -69,9 +74,29 @@ namespace TargetingModes
                 foreach (Pawn pawn in result)
                 {
                     if ((pawn.RaceProps.Humanlike && parms.raidStrategy == TM_RaidStrategyDefOf.ImmediateAttackSmart && pawn.IsCompetentWithWeapon()) ||
-                        (pawn.RaceProps.IsMechanoid && Rand.Chance(TargetingModesUtility.MechanoidRandomTargetingModeChance)))
+                        (pawn.RaceProps.IsMechanoid && Rand.Chance(TargetingModesSettings.mechanoidTargModeChance)))
                     {
                         // Validation for CompTargetingMode is done within this method
+                        pawn.TryAssignRandomTargetingMode();
+                    }
+                    yield return pawn;
+                }
+        }
+        #endregion
+
+        #region Postfix_GenerateAnimals
+        public static void Postfix_GenerateAnimals(ref List<Pawn> __result)
+        {
+            __result = ModifiedAnimalGroup(__result).ToList();
+        }
+
+        private static IEnumerable<Pawn> ModifiedAnimalGroup(List<Pawn> result)
+        {
+            if (!result.NullOrEmpty())
+                foreach (Pawn pawn in result)
+                {
+                    if (Rand.Chance(TargetingModesUtility.AdjustedChanceForAnimal(pawn)))
+                    {
                         pawn.TryAssignRandomTargetingMode();
                     }
                     yield return pawn;
@@ -103,13 +128,13 @@ namespace TargetingModes
         public static void Postfix_HitFactorFromShooter(ref float __result, Thing caster)
         {
             if (caster.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
-                __result = Mathf.Max(__result * targetingComp.GetTargetingMode().hitChanceFactor, ShootTuning.MinAccuracyFactorFromShooterAndDistance);
+                __result = Mathf.Max(__result * targetingComp.GetTargetingMode().HitChanceFactor, ShootTuning.MinAccuracyFactorFromShooterAndDistance);
         }
 
         public static void Postfix_GetNonMissChance(Verb_MeleeAttack __instance, ref float __result)
         {
             if (__instance.caster is Thing caster && caster.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp && __result == caster.GetStatValue(StatDefOf.MeleeHitChance))
-                __result *= __result * targetingComp.GetTargetingMode().hitChanceFactor;
+                __result *= __result * targetingComp.GetTargetingMode().HitChanceFactor;
         }
         #endregion
 
@@ -196,7 +221,7 @@ namespace TargetingModes
 
         private static void TryAssignRandomTargetingModeMechanoid(this Pawn pawn)
         {
-            if (Rand.Chance(TargetingModesUtility.MechanoidRandomTargetingModeChance))
+            if (Rand.Chance(TargetingModesSettings.mechanoidTargModeChance))
                 pawn.TryAssignRandomTargetingMode();
         }
         #endregion

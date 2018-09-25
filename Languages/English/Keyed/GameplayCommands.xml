@@ -1,7 +1,0 @@
-<LanguageData>
-
-    <CommandSetTargetingModeMulti>Set targeting mode</CommandSetTargetingModeMulti>
-    <CommandSetTargetingMode>Targeting: {0}</CommandSetTargetingMode>
-    <CommandSetTargetingModeDesc>Determine which targeting mode the pawn should use.</CommandSetTargetingModeDesc>
-
-</LanguageData>
