@@ -1,0 +1,9 @@
+<Manifest>
+    <identifier>TargetingModes</identifier>
+    <version>1.1.1</version>
+    <dependencies>
+        <li>JecsTools</li>
+    </dependencies>
+    <manifestUri>https://rawgit.com/XeoNovaDan/TargetingModes/master/About/Manifest.xml</manifestUri>
+    <downloadUri>https://github.com/XeoNovaDan/TargetingModes/releases</downloadUri>
+</Manifest>
