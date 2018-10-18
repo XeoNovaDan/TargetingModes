@@ -22,6 +22,24 @@ namespace TargetingModes
         {
             HarmonyInstance h = HarmonyInstance.Create("XeoNovaDan.TargetingModes");
 
+            #region Self-Patches
+            try
+            {
+                ((Action)(() =>
+                {
+                    if (ModCompatibilityCheck.JecsTools)
+                    {
+                        Log.Message("Targeting Modes :: JecsTools detected as active in load order. Patching...");
+
+                        h.Patch(AccessTools.Method(typeof(TargetingModesUtility), nameof(TargetingModesUtility.CanUseTargetingModes)),
+                            new HarmonyMethod(patchType, nameof(Prefix_CanUseTargetingModes)),
+                            new HarmonyMethod(patchType, nameof(Postfix_CanUseTargetingModes)));
+                    }
+                }))();
+            }
+            catch (TypeLoadException) { }
+            #endregion
+
             #region Patches
             h.Patch(AccessTools.Method(typeof(PawnGroupMakerUtility), nameof(PawnGroupMakerUtility.GeneratePawns)),
                 postfix: new HarmonyMethod(patchType, nameof(Postfix_GeneratePawns)));
@@ -61,6 +79,24 @@ namespace TargetingModes
             #endregion
 
         }
+
+        #region Patch_CanUseTargetingModes
+        public static bool Prefix_CanUseTargetingModes(ThingDef weapon, bool? __state)
+        {
+            if (weapon?.GetType().IsAssignableFrom(typeof(AbilityUser.ProjectileDef_Ability)) == true)
+            {
+                __state = false;
+                return false;
+            }
+            return true;
+        }
+
+        public static void Postfix_CanUseTargetingModes(ref bool __result, bool? __state)
+        {
+            if (__state != null)
+                __result = (bool)__state;
+        }
+        #endregion
 
         #region Postfix_GeneratePawns
         public static void Postfix_GeneratePawns(ref IEnumerable<Pawn> __result, PawnGroupMakerParms parms)

@@ -34,8 +34,8 @@ namespace TargetingModes
 
             if (instigator == null || !instigator.def.HasComp(typeof(CompTargetingMode)) || weapon == null)
                 return false;
-            if (weapon.GetType().IsAssignableFrom(typeof(AbilityUser.ProjectileDef_Ability)))
-                return true;
+            //if (weapon.GetType().IsAssignableFrom(typeof(AbilityUser.ProjectileDef_Ability)))
+            //    return true;
             if (weapon.thingClass.IsAssignableFrom(typeof(Pawn)) || weapon.IsMeleeWeapon)
                 return true;
             if (weapon.thingClass.IsAssignableFrom(typeof(Building_TurretGun)))

@@ -63,6 +63,7 @@
     <Compile Include="CompTargetingMode.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="ITargetModeSettable.cs" />
+    <Compile Include="ModCompatibilityCheck.cs" />
     <Compile Include="TargetingModeDef.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TargetingModeDefOf.cs" />
