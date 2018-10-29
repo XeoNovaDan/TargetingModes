@@ -131,7 +131,7 @@ namespace TargetingModes
             if (!result.NullOrEmpty())
                 foreach (Pawn pawn in result)
                 {
-                    if (Rand.Chance(TargetingModesUtility.AdjustedChanceForAnimal(pawn)))
+                    if (pawn.TryGetComp<CompTargetingMode>() != null && Rand.Chance(TargetingModesUtility.AdjustedChanceForAnimal(pawn)))
                     {
                         pawn.TryAssignRandomTargetingMode();
                     }

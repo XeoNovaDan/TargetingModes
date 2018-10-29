@@ -47,8 +47,13 @@ namespace TargetingModes
         
         public static BodyPartRecord ResolvePrioritizedPart(BodyPartRecord part, DamageInfo dinfo, Pawn pawn)
         {
+            // Null instigator or instigator has a custom thingClass which isn't covered by xpath patching
+            if (dinfo.Instigator?.TryGetComp<CompTargetingMode>() == null)
+                return part;
+
+            // Standard procedure
             BodyPartRecord newPart = part;
-            if (dinfo.Weapon.CanUseTargetingModes(dinfo.Instigator) && dinfo.Instigator?.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
+            if (dinfo.Weapon.CanUseTargetingModes(dinfo.Instigator) && dinfo.Instigator.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
             {
                 TargetingModeDef targetingMode = targetingComp.GetTargetingMode();
                 if (!part.IsPrioritizedPart(targetingMode))
