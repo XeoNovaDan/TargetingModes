@@ -32,7 +32,23 @@ namespace TargetingModes
                         Log.Message("Targeting Modes :: JecsTools detected as active in load order. Patching...");
 
                         h.Patch(AccessTools.Method(typeof(TargetingModesUtility), nameof(TargetingModesUtility.CanUseTargetingModes)),
-                            new HarmonyMethod(patchType, nameof(Prefix_CanUseTargetingModes)),
+                            new HarmonyMethod(patchType, nameof(PrefixA_CanUseTargetingModes)),
+                            new HarmonyMethod(patchType, nameof(Postfix_CanUseTargetingModes)));
+                    }
+                }))();
+            }
+            catch (TypeLoadException) { }
+
+            try
+            {
+                ((Action)(() =>
+                {
+                    if (ModCompatibilityCheck.AnimalVarietyCoats)
+                    {
+                        Log.Message("Targeting Modes :: Animal Variety Coats detected as active in load order. Patching...");
+
+                        h.Patch(AccessTools.Method(typeof(TargetingModesUtility), nameof(TargetingModesUtility.CanUseTargetingModes)),
+                            new HarmonyMethod(patchType, nameof(PrefixB_CanUseTargetingModes)),
                             new HarmonyMethod(patchType, nameof(Postfix_CanUseTargetingModes)));
                     }
                 }))();
@@ -81,9 +97,23 @@ namespace TargetingModes
         }
 
         #region Patch_CanUseTargetingModes
-        public static bool Prefix_CanUseTargetingModes(ThingDef weapon, bool? __state)
+        public static bool PrefixA_CanUseTargetingModes(ThingDef weapon, bool? __state)
         {
             if (weapon?.GetType().IsAssignableFrom(typeof(AbilityUser.ProjectileDef_Ability)) == true)
+            {
+                __state = false;
+                return false;
+            }
+            return true;
+        }
+
+        public static bool PrefixB_CanUseTargetingModes(ThingDef weapon, Thing instigator, bool? __state)
+        {
+            Log.Message(weapon?.GetType().IsAssignableFrom(typeof(AnimalVariations.AnimalMultiSkins)).ToString());
+            Log.Message(weapon?.GetType().IsAssignableFrom(typeof(Pawn)).ToString());
+            Log.Message(instigator?.GetType().IsAssignableFrom(typeof(AnimalVariations.AnimalMultiSkins)).ToString());
+            Log.Message(instigator?.GetType().IsAssignableFrom(typeof(Pawn)).ToString());
+            if (instigator?.GetType().IsAssignableFrom(typeof(AnimalVariations.AnimalMultiSkins)) == true)
             {
                 __state = false;
                 return false;

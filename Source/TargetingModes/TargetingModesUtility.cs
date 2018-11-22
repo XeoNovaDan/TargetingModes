@@ -25,6 +25,7 @@ namespace TargetingModes
         {
             //Log.Message($"weapon - {weapon.ToStringSafe()} ");
             //Log.Message($"weapon thingClass - {weapon?.thingClass.ToStringSafe()} ");
+            //Log.Message($"weapon thingClass assignable from Pawn - {weapon?.thingClass.IsAssignableFrom(typeof(Pawn)).ToStringSafe()} ");
             //Log.Message($"weapon type - {weapon?.GetType().ToStringSafe()} ");
             //Log.Message($"instigator - {instigator.ToStringSafe()} ");
             //Log.Message($"instigator type - {instigator?.GetType().ToStringSafe()} ");
@@ -34,8 +35,6 @@ namespace TargetingModes
 
             if (instigator == null || !instigator.def.HasComp(typeof(CompTargetingMode)) || weapon == null)
                 return false;
-            //if (weapon.GetType().IsAssignableFrom(typeof(AbilityUser.ProjectileDef_Ability)))
-            //    return true;
             if (weapon.thingClass.IsAssignableFrom(typeof(Pawn)) || weapon.IsMeleeWeapon)
                 return true;
             if (weapon.thingClass.IsAssignableFrom(typeof(Building_TurretGun)))
