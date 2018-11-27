@@ -53,10 +53,18 @@ namespace TargetingModes
 
         public int RerollCount(Pawn pawn)
         {
-            var extensionValues = pawn.RaceProps.body.GetModExtension<TargetModeRerollFactors>();
-            return GenMath.RoundRandom(rerollCount *
-                ((extensionValues != null && extensionValues.targetModeRerollCountFactors.ContainsKey(this)) ?
-                extensionValues.targetModeRerollCountFactors[this] : 1f));
+            float finalizedRerollCount = rerollCount;
+
+            // Whether or not a reroll modifier is applied based on the target's BodyDef
+            if (pawn.RaceProps.body.GetModExtension<TargetModeRerollFactors>() is TargetModeRerollFactors extensionValues && 
+                extensionValues.targetModeRerollCountFactors.ContainsKey(this))
+                finalizedRerollCount *= extensionValues.targetModeRerollCountFactors[this];
+
+            // Whether or not a reroll bonus is applied for the target being downed
+            if (pawn.Downed)
+                finalizedRerollCount *= ShootTuning.ExecutionAccuracyFactor;
+
+            return GenMath.RoundRandom(finalizedRerollCount);
         }
 
         public override void PostLoad()
