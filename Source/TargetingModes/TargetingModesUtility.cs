@@ -68,7 +68,7 @@ namespace TargetingModes
             {
                 TargetingModeDef targetingMode = targetingComp.GetTargetingMode();
                 if (!part.IsPrioritizedPart(targetingMode))
-                    newPart = RerollBodyPart(targetingMode, part, dinfo.Def, dinfo.Height, BodyPartDepth.Outside, pawn);
+                    newPart = RerollBodyPart(targetingMode, part, dinfo.Def, dinfo.Height, BodyPartDepth.Outside, pawn, dinfo.Instigator);
             }
             return newPart;
         }
@@ -81,11 +81,11 @@ namespace TargetingModes
 
 
         public static BodyPartRecord RerollBodyPart(TargetingModeDef targetingMode, BodyPartRecord bodyPart, DamageInfo dinfo, Pawn pawn) =>
-            RerollBodyPart(targetingMode, bodyPart, dinfo.Def, dinfo.Height, dinfo.Depth, pawn);
+            RerollBodyPart(targetingMode, bodyPart, dinfo.Def, dinfo.Height, dinfo.Depth, pawn, dinfo.Instigator);
 
-        public static BodyPartRecord RerollBodyPart(TargetingModeDef targetingMode, BodyPartRecord bodyPart, DamageDef damDef, BodyPartHeight height, BodyPartDepth depth, Pawn pawn)
+        public static BodyPartRecord RerollBodyPart(TargetingModeDef targetingMode, BodyPartRecord bodyPart, DamageDef damDef, BodyPartHeight height, BodyPartDepth depth, Pawn pawn, Thing instigator)
         {
-            for (int i = 0; i < targetingMode.RerollCount(pawn); i++)
+            for (int i = 0; i < targetingMode.RerollCount(pawn, instigator); i++)
             {
                 BodyPartRecord newPart = pawn.health.hediffSet.GetRandomNotMissingPart(damDef, height, depth);
                 if (newPart.IsPrioritizedPart(targetingMode))

@@ -51,7 +51,7 @@ namespace TargetingModes
             return false;
         }
 
-        public int RerollCount(Pawn pawn)
+        public int RerollCount(Pawn pawn, Thing instigator)
         {
             float finalizedRerollCount = rerollCount;
 
@@ -61,7 +61,7 @@ namespace TargetingModes
                 finalizedRerollCount *= extensionValues.targetModeRerollCountFactors[this];
 
             // Whether or not a reroll bonus is applied for the target being downed
-            if (pawn.Downed)
+            if (pawn.Downed && (pawn.Position - instigator.Position).LengthHorizontal <= ShootTuning.ExecutionMaxDistance)
                 finalizedRerollCount *= ShootTuning.ExecutionAccuracyFactor;
 
             return GenMath.RoundRandom(finalizedRerollCount);
