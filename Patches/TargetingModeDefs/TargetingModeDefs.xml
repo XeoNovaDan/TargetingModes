@@ -1,0 +1,28 @@
+<Patch>
+
+    <Operation Class="PatchOperationFindMod">
+        <mods>
+            <li>The Birds and the Bees</li>
+        </mods>
+        <match Class="PatchOperationAdd">
+            <xpath>Defs</xpath>
+            <value>
+
+                <TargetingModes.TargetingModeDef>
+                    <defName>Groin</defName>
+                    <label>groin</label>
+                    <commonality>0.5</commonality>
+                    <iconPath>UI/TargetingModes/Groin</iconPath>
+                    <displayOrder>15</displayOrder>
+                    <hitChanceFactor>0.7</hitChanceFactor>
+                    <rerollCount>24</rerollCount> <!-- Base hit chance is extremely low. 24x reroll count takes it from 0.5% to ~12% -->
+                    <tags>
+                        <li>FertilitySource</li>
+                    </tags>
+                </TargetingModes.TargetingModeDef>
+                
+            </value>
+        </match>
+    </Operation>
+
+</Patch>
