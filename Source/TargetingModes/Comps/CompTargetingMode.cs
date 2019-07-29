@@ -12,58 +12,66 @@ namespace TargetingModes
     public class CompTargetingMode : ThingComp, ITargetModeSettable
     {
 
+        private const int TargetModeResetCheckInterval = 60;
+
         public Pawn Pawn => parent as Pawn;
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (parent.Faction == Faction.OfPlayer && (Pawn == null ||
-                (Pawn.training?.HasLearned(TrainableDefOf.Obedience) == true ||
-                Pawn.Drafted)))
+            if (parent.Faction == Faction.OfPlayer && (Pawn == null || (Pawn.training != null && Pawn.training.HasLearned(TrainableDefOf.Obedience)) || Pawn.Drafted))
                 yield return TargetingModesUtility.SetTargetModeCommand(this);
         }
 
         public override void CompTick()
         {
             base.CompTick();
+
             // For compatibility with existing saves
-            if (_targetingMode == null || CanResetTargetingMode())
+            if (_targetingMode == null)
                 SetTargetingMode(TargetingModesUtility.DefaultTargetingMode);
+
+            // Check if targeting mode should be reset every 60 ticks
+            else if (parent.IsHashIntervalTick(TargetModeResetCheckInterval))
+            {
+                if (CanResetTargetingMode(out bool updateResetTick))
+                    SetTargetingMode(TargetingModesUtility.DefaultTargetingMode);
+                else if (updateResetTick)
+                    _resetTargetingModeTick = Find.TickManager.TicksGame + TargModeResetAttemptInterval();
+            }
         }
 
-        public bool CanResetTargetingMode()
+        public bool CanResetTargetingMode(out bool updateResetTick)
         {
-            // Non-player world pawns are exempt to player restrictions
-            if (parent.Map == null)
-                return Find.TickManager.TicksGame % TargModeResetAttemptInterval() == 0;
+            updateResetTick = false;
 
-            // If player's set it to never reset, if it isn't time to update or if it's already been reset
-            if (TargetingModesSettings.TargModeResetFrequencyInt == 0 ||
-                Find.TickManager.TicksGame != _resetTargetingModeTick ||
-                _targetingMode == TargetingModesUtility.DefaultTargetingMode)
+            // World pawns are exempt to player restrictions
+            if (parent.Map == null)
+                return Find.TickManager.TicksGame < _resetTargetingModeTick;       
+
+            // If player's set it to never reset, if the mode is already default or if it isn't time to update
+            if (TargetingModesSettings.TargModeResetFrequencyInt == 0 || _targetingMode == TargetingModesUtility.DefaultTargetingMode || Find.TickManager.TicksGame < _resetTargetingModeTick)
                 return false;
 
-            _resetTargetingModeTick += TargModeResetAttemptInterval();
-
-            // Not super efficient code, but legibility's the priority
-            if (Pawn != null)
+            // If the parent pawn is drafted or considered in dangerous combat
+            if (Pawn != null && (Pawn.Drafted || GenAI.InDangerousCombat(Pawn)))
             {
-                if (Pawn.Drafted)
-                    return false;
-                if (GenAI.InDangerousCombat(Pawn))
-                    return false;
-            }
-            if (parent is Building_TurretGun turret)
-            {
-                if (turret.CurrentTarget != null)
-                    return false;
-            }
+                updateResetTick = true;
+                return false;
+            }  
 
+            // If the parent is a turret and is targeting something
+            if (parent is Building_Turret turret && turret.CurrentTarget != null)
+            {
+                updateResetTick = true;
+                return false;
+            }
+                
             return true;
         }
 
         private int TargModeResetAttemptInterval()
         {
-            switch ((parent.Faction == Faction.OfPlayer) ? TargetingModesSettings.TargModeResetFrequencyInt : 3)
+            switch (parent.Faction == Faction.OfPlayer ? TargetingModesSettings.TargModeResetFrequencyInt : 3)
             {
                 // 1 = 1d
                 case 1:
@@ -91,7 +99,7 @@ namespace TargetingModes
         }
 
         public override string ToString() =>
-            $"CompTargetingMode for {parent} :: _targetingMode={_targetingMode.LabelCap}; _resetTargetingModeTick={_resetTargetingModeTick} (TicksGame={Find.TickManager.TicksGame})";
+            $"CompTargetingMode for {parent} :: _targetingMode={_targetingMode.LabelCap}; _resetTargetingModeTick={_resetTargetingModeTick}; (TicksGame={Find.TickManager.TicksGame})";
 
         public TargetingModeDef GetTargetingMode() => _targetingMode;
 

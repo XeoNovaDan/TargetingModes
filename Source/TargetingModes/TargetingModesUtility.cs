@@ -11,7 +11,7 @@ namespace TargetingModes
     public static class TargetingModesUtility
     {
 
-        public static TargetingModeDef DefaultTargetingMode = TargetingModeDefOf.Standard;
+        public static readonly TargetingModeDef DefaultTargetingMode = TargetingModeDefOf.Standard;
         private const float TargModeChanceFactorOffsetPerTrainabilityOrder = 0.05f;
 
         public static Command_SetTargetingMode SetTargetModeCommand(ITargetModeSettable settable) =>
@@ -21,28 +21,37 @@ namespace TargetingModes
                 settable = settable
             };
 
-        public static bool CanUseTargetingModes(this ThingDef weapon, Thing instigator)
+        public static bool CanUseTargetingModes(this Thing instigator, ThingDef weapon)
         {
+            // No instigator or instigator doesn't have CompTargetingMode
             if (instigator == null || !instigator.def.HasComp(typeof(CompTargetingMode)) || weapon == null)
                 return false;
-            if (typeof(Pawn).IsAssignableFrom(weapon.thingClass) || weapon.IsMeleeWeapon)
-                return true;
-            if (typeof(Building_Turret).IsAssignableFrom(weapon.thingClass))
-                return !weapon.building.turretGunDef.Verbs[0].CausesExplosion;
-            if (weapon.Verbs[0].CausesExplosion)
-                return false;
+
+            // Melee attack
+            //if (typeof(Pawn).IsAssignableFrom(weapon.thingClass) || weapon.IsMeleeWeapon)
+            //    return true;
+
+            if (instigator is Pawn pawn)
+            {
+                // Explosive
+                if (pawn.CurrentEffectiveVerb.verbProps.CausesExplosion)
+                    return false;
+            }
+
+            if (instigator is Building_Turret turret)
+            {
+                // Explosive
+                if (turret.CurrentEffectiveVerb.verbProps.CausesExplosion)
+                    return false;
+            }
+
             return true;
         }
         
         public static BodyPartRecord ResolvePrioritizedPart(BodyPartRecord part, DamageInfo dinfo, Pawn pawn)
         {
-            // Null instigator or instigator has a custom thingClass which isn't covered by xpath patching
-            if (dinfo.Instigator?.TryGetComp<CompTargetingMode>() == null)
-                return part;
-
-            // Standard procedure
             BodyPartRecord newPart = part;
-            if (dinfo.Weapon.CanUseTargetingModes(dinfo.Instigator) && dinfo.Instigator.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
+            if (dinfo.Instigator.CanUseTargetingModes(dinfo.Weapon) && dinfo.Instigator.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
             {
                 TargetingModeDef targetingMode = targetingComp.GetTargetingMode();
                 if (!part.IsPrioritizedPart(targetingMode))
@@ -54,7 +63,7 @@ namespace TargetingModes
         public static BodyPartRecord ResolvePrioritizedPart_External(BodyPartRecord part, DamageInfo dinfo, Pawn pawn)
         {
             BodyPartRecord newPart = part;
-            if (dinfo.Weapon.CanUseTargetingModes(dinfo.Instigator) && dinfo.Instigator?.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
+            if (dinfo.Instigator.CanUseTargetingModes(dinfo.Weapon) && dinfo.Instigator?.TryGetComp<CompTargetingMode>() is CompTargetingMode targetingComp)
             {
                 TargetingModeDef targetingMode = targetingComp.GetTargetingMode();
                 if (!part.IsPrioritizedPart(targetingMode))
@@ -113,6 +122,8 @@ namespace TargetingModes
                 return TargetingModesSettings.baseManhunterTargModeChance * (1 + orderOverIntermediate * TargModeChanceFactorOffsetPerTrainabilityOrder);
             return 0f;
         }
+
+        public static bool IsPlayerControlledAnimal(this Pawn pawn) => pawn.Spawned && pawn.MentalStateDef == null && pawn.RaceProps.Animal && pawn.Faction == Faction.OfPlayer;
 
     }
 }

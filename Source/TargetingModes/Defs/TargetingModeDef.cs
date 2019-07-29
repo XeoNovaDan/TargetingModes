@@ -11,11 +11,9 @@ namespace TargetingModes
     public class TargetingModeDef : Def
     {
 
-        public bool HasNoSpecifiedPartDetails =>
-            parts.NullOrEmpty() && partsOrAnyChildren.NullOrEmpty() && tags.NullOrEmpty();
+        public bool HasNoSpecifiedPartDetails => parts.NullOrEmpty() && partsOrAnyChildren.NullOrEmpty() && tags.NullOrEmpty();
 
-        public float HitChanceFactor =>
-            (TargetingModesSettings.accuracyPenalties) ? hitChanceFactor : 1f;
+        public float HitChanceFactor => TargetingModesSettings.accuracyPenalties ? hitChanceFactor : 1;
 
         public bool PartsListContains(BodyPartDef def) => !parts.NullOrEmpty() && parts.Contains(def);
 
@@ -56,8 +54,7 @@ namespace TargetingModes
             float finalizedRerollCount = rerollCount;
 
             // Whether or not a reroll modifier is applied based on the target's BodyDef
-            if (pawn.RaceProps.body.GetModExtension<TargetModeRerollFactors>() is TargetModeRerollFactors extensionValues && 
-                extensionValues.targetModeRerollCountFactors.ContainsKey(this))
+            if (pawn.RaceProps.body.GetModExtension<BodyDefExtension>() is BodyDefExtension extensionValues && extensionValues.targetModeRerollCountFactors.ContainsKey(this))
                 finalizedRerollCount *= extensionValues.targetModeRerollCountFactors[this];
 
             // Whether or not a reroll bonus is applied for the target being downed
@@ -76,15 +73,15 @@ namespace TargetingModes
             });
         }
 
-        public float commonality = 1f;
+        public float commonality = 1;
 
         public string iconPath;
 
         public int displayOrder;
 
-        public float hitChanceFactor = 1f;
+        public float hitChanceFactor = 1;
 
-        private int rerollCount = 0;
+        private int rerollCount;
 
         public List<BodyPartDef> parts;
 
