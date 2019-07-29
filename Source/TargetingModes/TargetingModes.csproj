@@ -16,7 +16,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Assemblies\</OutputPath>
+    <OutputPath>..\..\1.0\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,13 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\Assemblies\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\1.0\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="1SettingsHelper, Version=0.19.0.28153, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Assemblies\1SettingsHelper.dll</HintPath>
+      <HintPath>..\..\1.0\Assemblies\1SettingsHelper.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AbilityUser">
@@ -63,18 +64,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command_SetTargetingMode.cs" />
-    <Compile Include="CompTargetingMode.cs" />
-    <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="Gizmos\Command_SetTargetingMode.cs" />
+    <Compile Include="Comps\CompTargetingMode.cs" />
+    <Compile Include="HarmonyPatches\Patch_CompSpawnerMechanoidsOnDamaged.cs" />
+    <Compile Include="HarmonyPatches\Patch_DamageWorker_Bite.cs" />
+    <Compile Include="HarmonyPatches\Patch_DamageWorker_Blunt.cs" />
+    <Compile Include="HarmonyPatches\Patch_DamageWorker_Scratch.cs" />
+    <Compile Include="HarmonyPatches\Patch_DamageWorker_Cut.cs" />
+    <Compile Include="HarmonyPatches\Patch_DamageWorker_Stab.cs" />
+    <Compile Include="HarmonyPatches\Patch_DamageWorker_AddInjury.cs" />
+    <Compile Include="HarmonyPatches\Patch_Verb_MeleeAttack.cs" />
+    <Compile Include="HarmonyPatches\Patch_ShotReport.cs" />
+    <Compile Include="HarmonyPatches\Patch_Pawn.cs" />
+    <Compile Include="HarmonyPatches\Patch_ManhunterPackIncidentUtility.cs" />
+    <Compile Include="HarmonyPatches\Patch_PawnGroupMakerUtility.cs" />
+    <Compile Include="HarmonyPatches\HarmonyPatches.cs" />
     <Compile Include="ITargetModeSettable.cs" />
-    <Compile Include="ModCompatibilityCheck.cs" />
-    <Compile Include="TargetingModeDef.cs" />
+    <Compile Include="Defs\TargetingModeDef.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TargetingModeDefOf.cs" />
+    <Compile Include="DefOf\TargetingModeDefOf.cs" />
     <Compile Include="TargetingModesSettings.cs" />
+    <Compile Include="StaticConstructorClass.cs" />
     <Compile Include="TargetingModesUtility.cs" />
-    <Compile Include="TargetModeRerollFactors.cs" />
-    <Compile Include="TM_RaidStrategyDefOf.cs" />
+    <Compile Include="DefModExtensions\TargetModeRerollFactors.cs" />
+    <Compile Include="DefOf\TM_RaidStrategyDefOf.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

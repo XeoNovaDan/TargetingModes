@@ -8,7 +8,7 @@ using RimWorld;
 
 namespace TargetingModes
 {
-    public class TargetModeRerollFactors : DefModExtension
+    public class BodyDefExtension : DefModExtension
     {
 
         public Dictionary<TargetingModeDef, float> targetModeRerollCountFactors;
