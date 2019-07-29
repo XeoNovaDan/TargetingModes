@@ -37,6 +37,7 @@ namespace TargetingModes
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
             options.Gap();
+
             // General settings
             options.CheckboxLabeled("Settings_AccuracyPenalties".Translate(), ref accuracyPenalties, "Settings_AccuracyPenalties_Tooltip".Translate());
             options.Gap();
@@ -60,11 +61,12 @@ namespace TargetingModes
             options.Gap();
             options.AddLabeledSlider("Settings_BaseManhunterTargModeChance".Translate(), ref baseManhunterTargModeChance, 0, 1,
                 rightAlignedLabel: baseManhunterTargModeChance.ToStringPercent(), roundTo: 0.01f);
+
             // End of section
             GUI.color = defaultColor;
 
+            // End of settings
             options.End();
-
             Mod.GetSettings<TargetingModesSettings>().Write();
 
         }

@@ -25,9 +25,6 @@ namespace TargetingModes
         public override void CompTick()
         {
             base.CompTick();
-            // Debugging
-            //if (Find.TickManager.TicksGame % (GenTicks.TicksPerRealSecond * 4) == 0)
-            //    Log.Message(this.ToString());
             // For compatibility with existing saves
             if (_targetingMode == null || CanResetTargetingMode())
                 SetTargetingMode(TargetingModesUtility.DefaultTargetingMode);
@@ -50,7 +47,7 @@ namespace TargetingModes
             // Not super efficient code, but legibility's the priority
             if (Pawn != null)
             {
-                if (Pawn.drafter?.Drafted == true)
+                if (Pawn.Drafted)
                     return false;
                 if (GenAI.InDangerousCombat(Pawn))
                     return false;

@@ -23,21 +23,11 @@ namespace TargetingModes
 
         public static bool CanUseTargetingModes(this ThingDef weapon, Thing instigator)
         {
-            //Log.Message($"weapon - {weapon.ToStringSafe()} ");
-            //Log.Message($"weapon thingClass - {weapon?.thingClass.ToStringSafe()} ");
-            //Log.Message($"weapon thingClass assignable from Pawn - {weapon?.thingClass.IsAssignableFrom(typeof(Pawn)).ToStringSafe()} ");
-            //Log.Message($"weapon type - {weapon?.GetType().ToStringSafe()} ");
-            //Log.Message($"instigator - {instigator.ToStringSafe()} ");
-            //Log.Message($"instigator type - {instigator?.GetType().ToStringSafe()} ");
-            //Log.Message($"instigator def thingClass - {instigator?.def?.thingClass.ToStringSafe()} ");
-            //Log.Message($"instigator def type - {instigator?.def?.GetType().ToStringSafe()} ");
-            //Log.Message($"comp - {instigator?.def?.HasComp(typeof(CompTargetingMode)).ToStringSafe()} ");
-
             if (instigator == null || !instigator.def.HasComp(typeof(CompTargetingMode)) || weapon == null)
                 return false;
-            if (weapon.thingClass.IsAssignableFrom(typeof(Pawn)) || weapon.IsMeleeWeapon)
+            if (typeof(Pawn).IsAssignableFrom(weapon.thingClass) || weapon.IsMeleeWeapon)
                 return true;
-            if (weapon.thingClass.IsAssignableFrom(typeof(Building_TurretGun)))
+            if (typeof(Building_Turret).IsAssignableFrom(weapon.thingClass))
                 return !weapon.building.turretGunDef.Verbs[0].CausesExplosion;
             if (weapon.Verbs[0].CausesExplosion)
                 return false;
