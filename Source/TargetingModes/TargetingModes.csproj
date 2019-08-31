@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Gizmos\Command_SetTargetingMode.cs" />
     <Compile Include="Comps\CompTargetingMode.cs" />
+    <Compile Include="HarmonyPatches\CombatTweaks\Patch_DamageWorker_Bite.cs" />
     <Compile Include="HarmonyPatches\Patch_CompSpawnerMechanoidsOnDamaged.cs" />
     <Compile Include="HarmonyPatches\Patch_DamageWorker_Bite.cs" />
     <Compile Include="HarmonyPatches\Patch_DamageWorker_Blunt.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="DefOf\TargetingModeDefOf.cs" />
     <Compile Include="TargetingModesSettings.cs" />
     <Compile Include="StaticConstructorClass.cs" />
+    <Compile Include="ModCompatibilityCheck.cs" />
     <Compile Include="TargetingModesUtility.cs" />
     <Compile Include="DefModExtensions\TargetModeRerollFactors.cs" />
     <Compile Include="DefOf\TM_RaidStrategyDefOf.cs" />
