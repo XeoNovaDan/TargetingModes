@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Settings -->
+  <TargetingModesSettingsCategory>Targeting Modes</TargetingModesSettingsCategory>
+  <Settings_AccuracyPenalties>精準懲罰</Settings_AccuracyPenalties>
+  <Settings_AccuracyPenalties_Tooltip>目標部位是否會影響殖民者瞄準的準確性.</Settings_AccuracyPenalties_Tooltip>
+
+  <Settings_TargModeResetFrequency>瞄準重置頻率</Settings_TargModeResetFrequency>
+  <Settings_TargModeResetFrequency_0>永不</Settings_TargModeResetFrequency_0>
+  <Settings_TargModeResetFrequency_1>1天</Settings_TargModeResetFrequency_1>
+  <Settings_TargModeResetFrequency_2>12小時</Settings_TargModeResetFrequency_2>
+  <Settings_TargModeResetFrequency_3>6小時</Settings_TargModeResetFrequency_3>
+  <Settings_TargModeResetFrequency_4>3小時</Settings_TargModeResetFrequency_4>
+  <Settings_TargModeResetFrequency_5>1小時</Settings_TargModeResetFrequency_5>
+
+  <Settings_RaidersUseTargetingModes>敵對NPC使用瞄準模式</Settings_RaidersUseTargetingModes>
+  <Settings_RaidersUseTargetingModes_Tooltip>是否同意敵對角色使用瞄準模式.</Settings_RaidersUseTargetingModes_Tooltip>
+  <Settings_MinRaiderWeaponSkill>襲擊者的最低武器技能</Settings_MinRaiderWeaponSkill>
+  <Settings_MechTargModeChance>槍手的機率</Settings_MechTargModeChance>
+  <Settings_BaseManhunterTargModeChance>獵人的基本機率</Settings_BaseManhunterTargModeChance>
+
+  <!-- GameplayCommands -->
+  <CommandSetTargetingModeMulti>設置瞄準模式</CommandSetTargetingModeMulti>
+  <CommandSetTargetingMode>瞄準: {0}</CommandSetTargetingMode>
+  <CommandSetTargetingModeDesc>確定殖民者瞄準的部位.</CommandSetTargetingModeDesc>
+
+</LanguageData>
